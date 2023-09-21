@@ -1,0 +1,94 @@
+.contactForm {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  gap: 14px;
+}
+
+.label {
+  display: block;
+  width: 100%;
+}
+
+.labelText {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1;
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #556b85;
+}
+
+.input {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #495d75;
+  border: 1px solid #e7ecf2;
+  outline: none;
+  padding: 0px 20px;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.input::placeholder {
+  font-weight: 400;
+  transition: 250ms;
+  opacity: 0.5;
+}
+
+.input:focus::placeholder {
+  opacity: 0;
+}
+
+.submit {
+  display: flex;
+  position: relative;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  height: 50px;
+  margin-top: 10px;
+  background-color: #5c91b1;
+  color: #fff;
+  outline: none;
+  transition: background-color 250ms ease-out;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transform: translate(0px, 0px);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.submit:before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 50%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  background: #fff;
+  opacity: 0.2;
+}
+
+.submit:hover,
+.submit:focus {
+  background-color: #155889;
+}
+
+.submit:active {
+  transform: translate(0px, 1px);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
