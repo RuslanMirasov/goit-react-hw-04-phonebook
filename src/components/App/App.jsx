@@ -1,84 +1,68 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import css from './App.module.css';
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
 import { Section } from 'components/Section/Section';
 import { Notification } from 'components/Notification/Notification';
 import { Filter } from 'components/Filter/Filter';
 import { ContactList } from 'components/ContactList/ContactList';
-import ContactForm from 'components/ContactForm/ContactForm';
+import { ContactForm } from 'components/ContactForm/ContactForm';
 
-export class App extends Component{
+export default function App() {
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem('contacts')) ?? []
+  );
+  const [filter, setFilter] = useState('');
 
-  state = {
-    contacts: [],
-    filter:'',
-  };
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  componentDidMount() {
-    const localStorageContacts = localStorage.getItem('contacts');
-
-    if (localStorageContacts) {
-      this.setState({ contacts: JSON.parse(localStorageContacts) });
-    }
-  }
-
-  componentDidUpdate(_, prevState) {
-    const { contacts } = this.state;
-    prevState.contacts !== contacts && localStorage.setItem('contacts', JSON.stringify(contacts));
-  }
-
-  handleFilterChange = event => {
+  const handleFilterChange = event => {
     const filterValue = event.target.value;
-    this.setState({ filter: filterValue }); 
+    setFilter(filterValue);
   };
 
-  onFormSubmit = newContact => {
-      const isSameName = this.state.contacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase());
-      if (isSameName) return alert(`${isSameName.name} is already in contacts`);
-      this.setState(prevState => ({
-        contacts: [ {...newContact,id: nanoid()}, ...prevState.contacts],
-      }));
+  const onFormSubmit = newContact => {
+    const isSameName = contacts.find(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
+    if (isSameName) return alert(`${isSameName.name} is already in contacts`);
+    setContacts(prevState => [{ ...newContact, id: nanoid() }, ...prevState]);
   };
 
-  deleteContact = (contactId) => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
-    
-  };
-
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+  const deleteContact = contactId => {
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
     );
   };
 
-  render() {
-    const { contacts } = this.state
-    const filteredContacts = this.getFilteredContacts();
-
-    return (
-      <main className={css.main}>
-        <h1 hidden>React HW-03-Phonebook</h1>
-
-        <Section title='Phonebook'>
-          <ContactForm handleFormSubmit={this.onFormSubmit} />
-        </Section>
-
-        <Section title='Contacts'>
-          {contacts.length > 0 ?
-            <>
-              <Filter name={this.state.filter} handleFilterChange={this.handleFilterChange} />
-              <ContactList contacts={filteredContacts} onDeleteContact={this.deleteContact} />
-            </> :
-            <Notification message='There is no contacts in Phonebook!'></Notification>
-          }
-        </Section>       
-
-      </main>
+  const getFilteredContacts = (contactsArr, filterArr) => {
+    return contactsArr.filter(contact =>
+      contact.name.toLowerCase().includes(filterArr.toLowerCase())
     );
   };
-};
 
-export default App;
+  return (
+    <main className={css.main}>
+      <h1 hidden>React HW-04-Phonebook</h1>
+
+      <Section title="Phonebook">
+        <ContactForm handleFormSubmit={onFormSubmit} />
+      </Section>
+
+      <Section title="Contacts">
+        {contacts.length > 0 ? (
+          <>
+            <Filter name={filter} handleFilterChange={handleFilterChange} />
+            <ContactList
+              contacts={getFilteredContacts(contacts, filter)}
+              onDeleteContact={deleteContact}
+            />
+          </>
+        ) : (
+          <Notification message="There is no contacts in Phonebook!"></Notification>
+        )}
+      </Section>
+    </main>
+  );
+}
